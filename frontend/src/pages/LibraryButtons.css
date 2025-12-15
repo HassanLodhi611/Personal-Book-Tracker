@@ -1,0 +1,48 @@
+.library-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(45, 106, 79, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+
+.library-book-card:hover .library-overlay {
+    opacity: 1;
+}
+
+.overlay-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 80%;
+}
+
+.btn-read,
+.btn-download {
+    background: white;
+    color: var(--primary-color);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+    text-decoration: none;
+    display: block;
+}
+
+.btn-read {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.btn-read:hover,
+.btn-download:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-xl);
+}

@@ -1,0 +1,137 @@
+.book-details-page {
+    padding: var(--spacing-lg) 0;
+    min-height: calc(100vh - 100px);
+}
+
+.book-details-container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: var(--spacing-xl);
+    background: var(--bg-white);
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+}
+
+.book-cover-section {
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+}
+
+.book-cover-large {
+    width: 100%;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+}
+
+.book-cover-placeholder-large {
+    width: 100%;
+    aspect-ratio: 2/3;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6rem;
+    color: white;
+    opacity: 0.7;
+}
+
+.book-content-section {
+    min-width: 0;
+}
+
+.book-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-lg);
+    gap: var(--spacing-md);
+}
+
+.book-header h1 {
+    font-size: 2rem;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.book-author-large {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+}
+
+.book-info-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.info-row label,
+.info-section label {
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 100px;
+}
+
+.info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.book-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.book-notes {
+    color: var(--text-primary);
+    background: var(--bg-gray);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    line-height: 1.6;
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.book-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.text-secondary {
+    color: var(--text-secondary);
+}
+
+@media (max-width: 968px) {
+    .book-details-container {
+        grid-template-columns: 1fr;
+    }
+
+    .book-cover-section {
+        position: static;
+    }
+
+    .book-cover-large,
+    .book-cover-placeholder-large {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .book-header {
+        flex-direction: column;
+    }
+
+    .book-header button {
+        width: 100%;
+    }
+}
