@@ -126,7 +126,7 @@ const BookDetails = () => {
     };
 
     const handlePdfDownload = () => {
-        const fileName = book.pdfFile.split('/').pop() || book.pdfFile.split('\\\\').pop();
+
         const downloadUrl = `http://localhost:5000/${book.pdfFile}`;
 
         const link = document.createElement('a');
