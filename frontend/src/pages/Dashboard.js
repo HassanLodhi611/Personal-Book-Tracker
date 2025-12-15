@@ -15,15 +15,7 @@ const Dashboard = () => {
         wishlist: 0
     });
 
-    useEffect(() => {
-        fetchBooks();
-    }, []);
-
-    useEffect(() => {
-        calculateStats();
-    }, [books]);
-
-    const fetchBooks = async () => {
+    const fetchBooks = React.useCallback(async () => {
         try {
             const response = await axios.get('/books');
             if (response.data.success) {
@@ -34,16 +26,27 @@ const Dashboard = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const calculateStats = () => {
-        setStats({
-            total: books.length,
-            reading: books.filter((b) => b.status === 'Reading').length,
-            completed: books.filter((b) => b.status === 'Completed').length,
-            wishlist: books.filter((b) => b.status === 'Wishlist').length
-        });
-    };
+    useEffect(() => {
+        fetchBooks();
+    }, [fetchBooks]);
+
+    useEffect(() => {
+        const calculateStats = () => {
+            setStats({
+                total: books.length,
+                reading: books.filter((b) => b.status === 'Reading').length,
+                completed: books.filter((b) => b.status === 'Completed').length,
+                wishlist: books.filter((b) => b.status === 'Wishlist').length
+            });
+        };
+        calculateStats();
+    }, [books]);
+
+
+
+
 
     const filteredBooks = filter === 'All'
         ? books

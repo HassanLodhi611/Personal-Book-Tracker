@@ -10,21 +10,21 @@ const Library = () => {
     const [filter, setFilter] = useState('All');
 
     useEffect(() => {
+        const fetchBooks = async () => {
+            try {
+                const response = await axios.get('/books');
+                if (response.data.success) {
+                    setBooks(response.data.books);
+                }
+            } catch (error) {
+                console.error('Error fetching books:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchBooks();
     }, []);
-
-    const fetchBooks = async () => {
-        try {
-            const response = await axios.get('/books');
-            if (response.data.success) {
-                setBooks(response.data.books);
-            }
-        } catch (error) {
-            console.error('Error fetching books:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const booksWithPdf = books.filter((book) => book.hasPdf);
     const filteredBooks = filter === 'All' ? booksWithPdf : booksWithPdf.filter((book) => book.status === filter);
@@ -38,7 +38,6 @@ const Library = () => {
     };
 
     const handleDownload = (book) => {
-        const fileName = book.pdfFile.split('/').pop() || book.pdfFile.split('\\\\').pop();
         const downloadUrl = `http://localhost:5000/${book.pdfFile}`;
 
         const link = document.createElement('a');

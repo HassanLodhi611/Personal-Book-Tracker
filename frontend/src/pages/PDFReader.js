@@ -18,63 +18,63 @@ const PDFReader = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
+        const fetchBook = async () => {
+            try {
+                const response = await axios.get('/books');
+                const foundBook = response.data.books.find((b) => b._id === id);
+
+                if (foundBook) {
+                    if (!foundBook.hasPdf) {
+                        setError('This book does not have a PDF file');
+                        setLoading(false);
+                        return;
+                    }
+                    setBook(foundBook);
+                } else {
+                    setError('Book not found');
+                }
+            } catch (err) {
+                setError('Error loading book');
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchBook();
     }, [id]);
-
-    const fetchBook = async () => {
-        try {
-            const response = await axios.get('/books');
-            const foundBook = response.data.books.find((b) => b._id === id);
-
-            if (foundBook) {
-                if (!foundBook.hasPdf) {
-                    setError('This book does not have a PDF file');
-                    setLoading(false);
-                    return;
-                }
-                setBook(foundBook);
-            } else {
-                setError('Book not found');
-            }
-        } catch (err) {
-            setError('Error loading book');
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const onDocumentLoadSuccess = ({ numPages }) => {
         setNumPages(numPages);
         setPageNumber(1);
     };
 
-    const goToPrevPage = () => {
+    const goToPrevPage = React.useCallback(() => {
         setPageNumber((prev) => Math.max(prev - 1, 1));
-    };
+    }, []);
 
-    const goToNextPage = () => {
+    const goToNextPage = React.useCallback(() => {
         setPageNumber((prev) => Math.min(prev + 1, numPages));
-    };
+    }, [numPages]);
 
-    const goToFirstPage = () => {
+    const goToFirstPage = React.useCallback(() => {
         setPageNumber(1);
-    };
+    }, []);
 
-    const goToLastPage = () => {
+    const goToLastPage = React.useCallback(() => {
         setPageNumber(numPages);
-    };
+    }, [numPages]);
 
-    const zoomIn = () => {
+    const zoomIn = React.useCallback(() => {
         setScale((prev) => Math.min(prev + 0.2, 2.5));
-    };
+    }, []);
 
-    const zoomOut = () => {
+    const zoomOut = React.useCallback(() => {
         setScale((prev) => Math.max(prev - 0.2, 0.5));
-    };
+    }, []);
 
-    const resetZoom = () => {
+    const resetZoom = React.useCallback(() => {
         setScale(1.0);
-    };
+    }, []);
 
     const handlePageInputChange = (e) => {
         const page = parseInt(e.target.value);
@@ -105,7 +105,7 @@ const PDFReader = () => {
 
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [numPages]);
+    }, [goToPrevPage, goToNextPage, goToFirstPage, goToLastPage, zoomIn, zoomOut, resetZoom]);
 
     if (loading) {
         return (

@@ -20,30 +20,30 @@ const BookDetails = () => {
     const [uploadingPdf, setUploadingPdf] = useState(false);
 
     useEffect(() => {
+        const fetchBook = async () => {
+            try {
+                const response = await axios.get('/books');
+                const foundBook = response.data.books.find((b) => b._id === id);
+
+                if (foundBook) {
+                    setBook(foundBook);
+                    setFormData({
+                        status: foundBook.status,
+                        rating: foundBook.rating,
+                        notes: foundBook.notes
+                    });
+                } else {
+                    setError('Book not found');
+                }
+            } catch (err) {
+                setError('Error loading book details');
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchBook();
     }, [id]);
-
-    const fetchBook = async () => {
-        try {
-            const response = await axios.get('/books');
-            const foundBook = response.data.books.find((b) => b._id === id);
-
-            if (foundBook) {
-                setBook(foundBook);
-                setFormData({
-                    status: foundBook.status,
-                    rating: foundBook.rating,
-                    notes: foundBook.notes
-                });
-            } else {
-                setError('Book not found');
-            }
-        } catch (err) {
-            setError('Error loading book details');
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleChange = (e) => {
         setFormData({
