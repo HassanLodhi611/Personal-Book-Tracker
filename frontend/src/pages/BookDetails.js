@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
 import './BookDetails.css';
-import './BookDetailsPDF.css';
+
 
 const BookDetails = () => {
     const { id } = useParams();
@@ -16,8 +16,8 @@ const BookDetails = () => {
         rating: 0,
         notes: ''
     });
-    const [pdfFile, setPdfFile] = useState(null);
-    const [uploadingPdf, setUploadingPdf] = useState(false);
+
+
 
     useEffect(() => {
         const fetchBook = async () => {
@@ -89,76 +89,6 @@ const BookDetails = () => {
         } catch (err) {
             setError('Error deleting book');
         }
-    };
-
-    const handlePdfUpload = async (e) => {
-        e.preventDefault();
-        if (!pdfFile) {
-            setError('Please select a PDF file');
-            return;
-        }
-
-        setUploadingPdf(true);
-        setError('');
-
-        try {
-            const formData = new FormData();
-            formData.append('pdf', pdfFile);
-
-            const response = await axios.post(`/books/upload-pdf/${id}`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-
-            if (response.data.success) {
-                setBook(response.data.book);
-                setPdfFile(null);
-                alert('PDF uploaded successfully!');
-                // Reset file input
-                document.querySelector('.file-input').value = '';
-            }
-        } catch (err) {
-            setError(err.response?.data?.message || 'Error uploading PDF');
-        } finally {
-            setUploadingPdf(false);
-        }
-    };
-
-    const handlePdfDownload = () => {
-
-        const downloadUrl = `http://localhost:5000/${book.pdfFile}`;
-
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = `${book.title}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-
-    const handlePdfDelete = async () => {
-        if (!window.confirm('Are you sure you want to delete this PDF?')) {
-            return;
-        }
-
-        try {
-            const response = await axios.delete(`/books/pdf/${id}`);
-            if (response.data.success) {
-                setBook(response.data.book);
-                alert('PDF deleted successfully');
-            }
-        } catch (err) {
-            setError(err.response?.data?.message || 'Error deleting PDF');
-        }
-    };
-
-    const formatFileSize = (bytes) => {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
     };
 
     const renderStars = (currentRating, interactive = false) => {
@@ -271,61 +201,7 @@ const BookDetails = () => {
                                     </p>
                                 </div>
 
-                                {/* PDF Library Section */}
-                                <div className="pdf-section">
-                                    <h3>📚 Digital Library</h3>
 
-                                    {book.hasPdf ? (
-                                        <div className="pdf-exists">
-                                            <div className="pdf-file-info">
-                                                <div className="pdf-icon">📄</div>
-                                                <div>
-                                                    <div className="pdf-filename">
-                                                        {book.title}.pdf
-                                                    </div>
-                                                    <div className="pdf-filesize">
-                                                        Size: {formatFileSize(book.fileSize)}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="pdf-actions">
-                                                <button
-                                                    className="btn btn-primary"
-                                                    onClick={handlePdfDownload}
-                                                >
-                                                    ⬇ Download PDF
-                                                </button>
-                                                <button
-                                                    className="btn btn-danger"
-                                                    onClick={handlePdfDelete}
-                                                >
-                                                    🗑 Delete PDF
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="pdf-upload">
-                                            <p className="pdf-upload-info">
-                                                Upload a PDF version of this book to access it anytime from your digital library
-                                            </p>
-                                            <form onSubmit={handlePdfUpload} className="pdf-upload-form">
-                                                <input
-                                                    type="file"
-                                                    accept=".pdf,application/pdf"
-                                                    onChange={(e) => setPdfFile(e.target.files[0])}
-                                                    className="file-input"
-                                                />
-                                                <button
-                                                    type="submit"
-                                                    className="btn btn-primary"
-                                                    disabled={uploadingPdf || !pdfFile}
-                                                >
-                                                    {uploadingPdf ? 'Uploading...' : '📤 Upload PDF'}
-                                                </button>
-                                            </form>
-                                        </div>
-                                    )}
-                                </div>
 
                                 <button className="btn btn-primary" onClick={() => setIsEditing(true)}>
                                     Edit Details

@@ -39,18 +39,7 @@ const bookSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-    pdfFile: {
-        type: String,
-        default: ''
-    },
-    hasPdf: {
-        type: Boolean,
-        default: false
-    },
-    fileSize: {
-        type: Number,
-        default: 0
-    }
+
 }, {
     timestamps: true
 });

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Document, Page, pdfjs } from 'react-pdf';
 import axios from '../api/axios';
@@ -107,6 +107,18 @@ const PDFReader = () => {
         return () => window.removeEventListener('keydown', handleKeyPress);
     }, [goToPrevPage, goToNextPage, goToFirstPage, goToLastPage, zoomIn, zoomOut, resetZoom]);
 
+    // Use API route to bypass IDM (no .pdf extension)
+    const token = localStorage.getItem('token');
+
+    const fileObj = useMemo(() => {
+        if (!book) return null;
+        return {
+            url: `http://localhost:5000/api/books/content/${book._id}`,
+            httpHeaders: { 'Authorization': `Bearer ${token}` },
+            withCredentials: true
+        };
+    }, [book, token]);
+
     if (loading) {
         return (
             <div className="loading">
@@ -130,7 +142,7 @@ const PDFReader = () => {
 
     if (!book) return null;
 
-    const pdfUrl = `http://localhost:5000/${book.pdfFile}`;
+
 
     return (
         <div className="pdf-reader">
@@ -191,7 +203,7 @@ const PDFReader = () => {
             {/* PDF Viewer */}
             <div className="pdf-viewer-container">
                 <Document
-                    file={pdfUrl}
+                    file={pdfFile}
                     onLoadSuccess={onDocumentLoadSuccess}
                     onLoadError={(error) => setError('Failed to load PDF')}
                     loading={

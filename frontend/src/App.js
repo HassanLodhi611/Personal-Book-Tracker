@@ -9,8 +9,8 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import AddBook from './pages/AddBook';
 import BookDetails from './pages/BookDetails';
-import Library from './pages/Library';
-import PDFReader from './pages/PDFReader';
+
+
 import './index.css';
 
 function App() {
@@ -47,22 +47,8 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/library"
-                element={
-                  <ProtectedRoute>
-                    <Library />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/reader/:id"
-                element={
-                  <ProtectedRoute>
-                    <PDFReader />
-                  </ProtectedRoute>
-                }
-              />
+
+
               <Route path="/" element={<Navigate to="/dashboard" />} />
             </Routes>
           </div>

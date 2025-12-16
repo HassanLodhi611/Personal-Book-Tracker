@@ -21,16 +21,27 @@ const AddBook = () => {
 
     const navigate = useNavigate();
 
+    const [lastSearchTime, setLastSearchTime] = useState(0);
+
     const searchBooks = async () => {
-        if (!searchQuery.trim()) return;
+        const now = Date.now();
+        // Prevent spamming locally (1 second cooldown) and parallel requests
+        if (!searchQuery.trim() || searching || (now - lastSearchTime < 1000)) return;
 
         setSearching(true);
+        setLastSearchTime(now);
         setError('');
 
         try {
-            const response = await fetch(
-                `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(searchQuery)}&maxResults=10`
-            );
+            const apiKey = process.env.REACT_APP_GOOGLE_BOOKS_API_KEY;
+            const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(searchQuery)}&maxResults=10${apiKey ? `&key=${apiKey}` : ''}`;
+
+            const response = await fetch(url);
+
+            if (response.status === 429) {
+                throw new Error('Too many requests. Please wait a moment.');
+            }
+
             const data = await response.json();
 
             if (data.items) {
@@ -41,7 +52,9 @@ const AddBook = () => {
             }
         } catch (err) {
             console.error('Search error:', err);
-            setError('Error searching books. Please try again.');
+            setError(err.message === 'Too many requests. Please wait a moment.'
+                ? err.message
+                : 'Error searching books. Please try again.');
         } finally {
             setSearching(false);
         }

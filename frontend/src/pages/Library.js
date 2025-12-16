@@ -26,27 +26,7 @@ const Library = () => {
         fetchBooks();
     }, []);
 
-    const booksWithPdf = books.filter((book) => book.hasPdf);
-    const filteredBooks = filter === 'All' ? booksWithPdf : booksWithPdf.filter((book) => book.status === filter);
-
-    const formatFileSize = (bytes) => {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
-    };
-
-    const handleDownload = (book) => {
-        const downloadUrl = `http://localhost:5000/${book.pdfFile}`;
-
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = `${book.title}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
+    const filteredBooks = filter === 'All' ? books : books.filter((book) => book.status === filter);
 
     if (loading) {
         return (
@@ -63,7 +43,7 @@ const Library = () => {
                     <div>
                         <h1>📚 ReadVault Library</h1>
                         <p className="library-subtitle">
-                            Access your collection of {booksWithPdf.length} digital books anytime, anywhere
+                            Access your collection of {books.length} books
                         </p>
                     </div>
                     <Link to="/dashboard" className="btn btn-secondary">
@@ -74,23 +54,17 @@ const Library = () => {
                 {/* Stats */}
                 <div className="library-stats">
                     <div className="stat-item">
-                        <div className="stat-number">{booksWithPdf.length}</div>
-                        <div className="stat-text">Total PDFs</div>
+                        <div className="stat-number">{books.length}</div>
+                        <div className="stat-text">Total Books</div>
                     </div>
                     <div className="stat-item">
-                        <div className="stat-number">
-                            {formatFileSize(booksWithPdf.reduce((sum, book) => sum + book.fileSize, 0))}
-                        </div>
-                        <div className="stat-text">Total Size</div>
-                    </div>
-                    <div className="stat-item">
-                        <div className="stat-number">{booksWithPdf.filter((b) => b.status === 'Reading').length}</div>
+                        <div className="stat-number">{books.filter((b) => b.status === 'Reading').length}</div>
                         <div className="stat-text">Currently Reading</div>
                     </div>
                 </div>
 
                 {/* Filters */}
-                {booksWithPdf.length > 0 && (
+                {books.length > 0 && (
                     <div className="library-filters">
                         <button
                             className={`filter-chip ${filter === 'All' ? 'active' : ''}`}
@@ -142,22 +116,7 @@ const Library = () => {
                                         </div>
                                     )}
                                     <div className="library-overlay">
-                                        <div className="overlay-buttons">
-                                            <Link
-                                                to={`/reader/${book._id}`}
-                                                className="btn-read"
-                                                title="Read PDF"
-                                            >
-                                                📖 Read
-                                            </Link>
-                                            <button
-                                                className="btn-download"
-                                                onClick={() => handleDownload(book)}
-                                                title="Download PDF"
-                                            >
-                                                ⬇ Download
-                                            </button>
-                                        </div>
+
                                     </div>
                                 </div>
                                 <div className="library-book-info">
@@ -167,7 +126,7 @@ const Library = () => {
                                         <span className={`status-badge badge-${book.status.toLowerCase()}`}>
                                             {book.status}
                                         </span>
-                                        <span className="file-size">{formatFileSize(book.fileSize)}</span>
+
                                     </div>
                                     <Link to={`/book/${book._id}`} className="view-details-link">
                                         View Details →
